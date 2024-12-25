@@ -1,0 +1,322 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Person {
+protected:
+    string name;
+    int age;
+
+public:
+    Person(const string& name, int age) : name(name), age(age) {}
+
+    virtual ~Person() {}  // Виртуальный деструктор
+
+    virtual void displayInfo() const {
+        cout << "Имя: " << name << ", Возраст: " << age << endl;
+    }
+
+    string getName() const {
+        return name;
+    }
+
+    int getAge() const {
+        return age;
+    }
+};
+
+class Student : public Person {
+private:
+    string grade; // Класс с буквой, например "9A"
+
+public:
+    Student(const string& name, int age, const string& grade) : Person(name, age), grade(grade) {}
+
+    void displayInfo() const override {
+        cout << "Ученик: ";
+        Person::displayInfo();
+        cout << "Класс: " << grade << endl;
+    }
+
+    string getGrade() const {
+        return grade;
+    }
+
+    void updateInfo(int newAge, const string& newGrade) {
+        age = newAge;
+        grade = newGrade;
+    }
+};
+
+class Teacher : public Person {
+private:
+    string subject;
+
+public:
+    Teacher(const string& name, int age, const string& subject) : Person(name, age), subject(subject) {}
+
+    void displayInfo() const override {
+        cout << "Учитель: ";
+        Person::displayInfo();
+        cout << "Предмет: " << subject << endl;
+    }
+
+    string getSubject() const {
+        return subject;
+    }
+
+    void updateInfo(int newAge, const string& newSubject) {
+        age = newAge;
+        subject = newSubject;
+    }
+};
+
+class Parent : public Person {
+private:
+    string childName;
+
+public:
+    Parent(const string& name, int age, const string& childName) : Person(name, age), childName(childName) {}
+
+    void displayInfo() const override {
+        cout << "Родитель: ";
+        Person::displayInfo();
+        cout << "Ребёнок: " << childName << endl;
+    }
+
+    string getChildName() const {
+        return childName;
+    }
+
+    void updateInfo(int newAge) {
+        age = newAge;
+    }
+};
+
+class School {
+private:
+    vector<Student> students;
+    vector<Teacher> teachers;
+    vector<Parent> parents;
+
+public:
+    void addStudent(const Student& student) {
+        students.push_back(student);
+    }
+
+    void addTeacher(const Teacher& teacher) {
+        teachers.push_back(teacher);
+    }
+
+    void addParent(const Parent& parent) {
+        parents.push_back(parent);
+    }
+
+    void displayAllInfo() const {
+        cout << "Ученики:" << endl;
+        for (const auto& student : students) {
+            student.displayInfo();
+        }
+
+        cout << "\nУчителя:" << endl;
+        for (const auto& teacher : teachers) {
+            teacher.displayInfo();
+        }
+
+        cout << "\nРодители:" << endl;
+        for (const auto& parent : parents) {
+            parent.displayInfo();
+        }
+    }
+
+    void viewTeachers() const {
+        cout << "\nИнформация об учителях:" << endl;
+        for (const auto& teacher : teachers) {
+            teacher.displayInfo();
+        }
+    }
+
+    void viewStudents() const {
+        cout << "\nИнформация об учениках:" << endl;
+        for (const auto& student : students) {
+            student.displayInfo();
+        }
+    }
+
+    void viewParents() const {
+        cout << "\nИнформация о родителях:" << endl;
+        for (const auto& parent : parents) {
+            parent.displayInfo();
+        }
+    }
+
+    void viewStudentsByGrade(const string& grade) const {
+        cout << "\nУченики в классе " << grade << ":" << endl;
+        for (const auto& student : students) {
+            if (student.getGrade() == grade) {
+                student.displayInfo();
+            }
+        }
+    }
+
+    void updateStudent(const string& name, int newAge, const string& newGrade) {
+        for (auto& student : students) {
+            if (student.getName() == name) {
+                student.updateInfo(newAge, newGrade);
+                cout << "Данные ученика обновлены." << endl;
+                return;
+            }
+        }
+        cout << "Ученик не найден!" << endl;
+    }
+
+    void updateTeacher(const string& name, int newAge, const string& newSubject) {
+        for (auto& teacher : teachers) {
+            if (teacher.getName() == name) {
+                teacher.updateInfo(newAge, newSubject);
+                cout << "Данные учителя обновлены." << endl;
+                return;
+            }
+        }
+        cout << "Учитель не найден!" << endl;
+    }
+
+    void updateParent(const string& name, int newAge) {
+        for (auto& parent : parents) {
+            if (parent.getName() == name) {
+                parent.updateInfo(newAge);
+                cout << "Данные родителя обновлены." << endl;
+                return;
+            }
+        }
+        cout << "Родитель не найден!" << endl;
+    }
+};
+
+int main() {
+    School school;
+
+    // Добавляем учеников
+    school.addStudent(Student("Иванов Иван Иванович", 14, "8А"));
+    school.addStudent(Student("Петрова Екатерина Сергеевна", 15, "9А"));
+
+    // Добавляем учителей
+    school.addTeacher(Teacher("Сидоров Андрей Викторович", 45, "Математика"));
+    school.addTeacher(Teacher("Козлова Елена Александровна", 38, "История"));
+    school.addTeacher(Teacher("Макаров Максим Олегович", 35, "Русский язык"));
+    school.addTeacher(Teacher("Михайлова Ольга Михайловна", 28, "Технология"));
+    school.addTeacher(Teacher("Николаева Елена Николаевна", 48, "Литература"));
+
+    // Добавляем родителей
+    school.addParent(Parent("Иванов Иван Сергеевич", 40, "Иванов Иван Иванович"));
+    school.addParent(Parent("Иванова Полина Владимировна", 41, "Иванов Иван Иванович"));
+    school.addParent(Parent("Петров Александр Михайлович", 45, "Петрова Екатерина Сергеевна"));
+    school.addParent(Parent("Петрова Татьяна Александровна", 39, "Петрова Екатерина Сергеевна"));
+
+    // Ввод команды
+    cout << "Введите команду (add_student, view_info, view_teachers, view_students, view_parents, view_students_by_grade, update_student, update_teacher, update_parent, exit): ";
+    string command;
+    cin >> command;
+
+    while (command != "exit") {
+        if (command == "add_student") {
+            string name, grade;
+            int age;
+            cout << "Введите имя ученика: ";
+            cin.ignore();
+            getline(cin, name);
+            cout << "Введите возраст ученика: ";
+            cin >> age;
+            cout << "Введите класс ученика: ";
+            cin >> grade;
+
+            school.addStudent(Student(name, age, grade));
+            cout << "Ученик добавлен." << endl;
+
+            string addParent;
+            cout << "Добавить родителей? (yes/no): ";
+            cin >> addParent;
+
+            while (addParent == "yes") {
+                string parentName;
+                int parentAge;
+                cout << "Введите имя родителя: ";
+                cin.ignore();
+                getline(cin, parentName);
+                cout << "Введите возраст родителя: ";
+                cin >> parentAge;
+
+                school.addParent(Parent(parentName, parentAge, name));
+                cout << "Родитель добавлен." << endl;
+
+                cout << "Добавить другого родителя? (yes/no): ";
+                cin >> addParent;
+            }
+        }
+        else if (command == "view_info") {
+            school.displayAllInfo();
+        }
+        else if (command == "view_teachers") {
+            school.viewTeachers();
+        }
+        else if (command == "view_students") {
+            school.viewStudents();
+        }
+        else if (command == "view_parents") {
+            school.viewParents();
+        }
+        else if (command == "view_students_by_grade") {
+            string grade;
+            cout << "Введите класс: ";
+            cin >> grade;
+            school.viewStudentsByGrade(grade);
+        }
+        else if (command == "update_student") {
+            string name, newGrade;
+            int newAge;
+            cout << "Введите имя ученика для обновления: ";
+            cin.ignore();
+            getline(cin, name);
+            cout << "Введите новый возраст ученика: ";
+            cin >> newAge;
+            cout << "Введите новый класс ученика: ";
+            cin >> newGrade;
+
+            school.updateStudent(name, newAge, newGrade);
+        }
+        else if (command == "update_teacher") {
+            string name, newSubject;
+            int newAge;
+            cout << "Введите имя учителя для обновления: ";
+            cin.ignore();
+            getline(cin, name);
+            cout << "Введите новый возраст учителя: ";
+            cin >> newAge;
+            cout << "Введите новый предмет: ";
+            cin >> newSubject;
+
+            school.updateTeacher(name, newAge, newSubject);
+        }
+        else if (command == "update_parent") {
+            string name;
+            int newAge;
+            cout << "Введите имя родителя для обновления: ";
+            cin.ignore();
+            getline(cin, name);
+            cout << "Введите новый возраст родителя: ";
+            cin >> newAge;
+
+            school.updateParent(name, newAge);
+        }
+        else {
+            cout << "Неизвестная команда." << endl;
+        }
+
+        cout << "Введите команду (add_student, view_info, view_teachers, view_students, view_parents, view_students_by_grade, update_student, update_teacher, update_parent, exit): ";
+        cin >> command;
+    }
+
+    return 0;
+}
